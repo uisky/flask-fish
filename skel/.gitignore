@@ -1,0 +1,19 @@
+# Мусор от IDE, GDE, менеджеров пакетов и самого питона
+.idea/
+*.iml
+.DS_Store
+node_modules/
+bower_components/
+__pycache__/
+*.pyc
+*.egg-info
+*.egg
+*.pid
+.sass-cache/
+/.cache/
+
+# Локальные конфиги
+/{{ name }}/config.local.py
+
+# Файлы, создаваемые приложением
+/var/

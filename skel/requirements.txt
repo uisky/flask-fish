@@ -1,0 +1,20 @@
+flask
+{% if 2 in core -%}
+flask-script
+{% endif %}
+
+wtforms
+flask-wtf
+
+psycopg2
+{% if 1 in core -%}
+sqlalchemy
+{% endif -%}
+{% if 0 in core -%}
+alembic
+flask-sqlalchemy
+{% endif -%}
+
+{% if 3 in core -%}
+flask-login
+{% endif -%}
