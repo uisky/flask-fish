@@ -1,0 +1,65 @@
+{% raw -%}
+{% set menu = [
+{% endraw %}
+{% for bp in blueprints %}
+    ('{{ bp }}', 'Блюпринт "{{ bp }}"', url_for('{{ bp }}.index')),
+{% endfor %}
+{% raw %}
+] -%}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{{ page_title|default('') }}</title>
+    <link rel="stylesheet" href="http://yastatic.net/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/common.css">
+    <script type="text/javascript" src="http://yastatic.net/jquery/2.1.3/jquery.js"></script>
+    <script type="text/javascript" src="http://yastatic.net/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/common.js"></script>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">{% endraw %}{{ name }}{% raw %}</a>
+        </div>
+
+        {% block menu_main %}
+        {% set menu_current = menu_current|default(request.blueprint) %}
+        <ul class="nav navbar-nav">
+            {% for id, title, url in menu %}
+            <li {% if id == menu_current %} class="active" {% endif %}><a href="{{ url }}">{{ title }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endblock %}
+    </div>
+</nav>
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=True, category_filter=['danger', 'warning', 'success', 'info']) %}
+        {% if messages %}
+            <div class="container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message[0] }}" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ message[1] }}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+{% block tail %}{% endblock %}
+</body>
+</html>
+{%- endraw %}

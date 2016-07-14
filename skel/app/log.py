@@ -6,20 +6,20 @@ import ast
 import datetime
 from functools import partial
 
-from common import color
+import ansicolors
 
 
 class FlaskFormatter(logging.Formatter):
-    format_string = ('%(levelname)s ' + color.black('%(asctime)s %(pathname)s:%(lineno)d\n') +
+    format_string = ('%(levelname)s ' + ansicolors.black('%(asctime)s %(pathname)s:%(lineno)d\n') +
                      '%(message)s\n')
 
     def format(self, record):
         level_color = {
-            'DEBUG': partial(color.cyan, style='bold'),
-            'INFO': partial(color.white, dark=True, style='bold'),
-            'WARNING': partial(color.yellow, style='bold'),
-            'ERROR': partial(color.red, style='bold'),
-            'CRITICAL': partial(color.red, background=True, style='bold')
+            'DEBUG': partial(ansicolors.cyan, style='bold'),
+            'INFO': partial(ansicolors.white, style='bold+faint'),
+            'WARNING': partial(ansicolors.yellow, style='bold'),
+            'ERROR': partial(ansicolors.red, style='bold'),
+            'CRITICAL': partial(ansicolors.yellow, bg='red', style='bold')
         }
         record.levelname = level_color[record.levelname](record.levelname)
         record.message = record.getMessage()
@@ -47,3 +47,32 @@ class AlchemyFormatter(FlaskFormatter):
                                    sqlparse.format(_message, reindent=True, keyword_case='upper'))
             record.msg = '\033[32m{}\033[0m'.format(_message)
         return super().format(record)
+
+
+def init_logging(app):
+    console_handler = logging.StreamHandler()
+
+    if app.config['DEBUG']:
+        console_handler.setLevel(logging.DEBUG)
+    else:
+        console_handler.setLevel(logging.ERROR)
+
+    formatter = FlaskFormatter()
+    console_handler.setFormatter(formatter)
+
+    app.logger.handlers = []
+    app.logger.propagate = False
+    app.logger.addHandler(console_handler)
+
+    db_logger_level = logging.INFO if app.config['SQLALCHEMY_TRUE_ECHO'] else logging.WARNING
+
+    db_formatter = AlchemyFormatter()
+
+    db_handler = logging.StreamHandler()
+    db_handler.setFormatter(db_formatter)
+
+    db_logger = logging.getLogger('sqlalchemy.engine')
+    db_logger.propagate = False
+
+    db_logger.addHandler(db_handler)
+    logging.getLogger('sqlalchemy.engine').setLevel(db_logger_level)

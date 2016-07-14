@@ -2,7 +2,7 @@ import logging
 import pprint
 
 from flask import current_app
-from flask.ext.script import Command
+from flask_script import Command
 
 from {{ name }}.models import *
 

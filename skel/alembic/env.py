@@ -9,8 +9,8 @@ from logging.config import fileConfig
 
 sys.path.append(os.getcwd())
 
-from agg import create_app
-from agg.core import db
+from {{ name }} import create_app
+from {{ name }}.core import db
 
 app = create_app('config.local.py', purpose='alembic')
 

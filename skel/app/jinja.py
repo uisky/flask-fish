@@ -1,7 +1,8 @@
-from flask import get_flashed_messages
-import common
-from urllib.parse import urlsplit
-from agg import util
+import pytz
+from datetime import datetime
+
+from flask import get_flashed_messages, Markup
+from {{ name }} import util
 
 
 def register_jinja_filters(app):
@@ -25,7 +26,7 @@ def register_jinja_filters(app):
 
     @app.template_filter('humantime')
     def humantime(ts):
-        now = common.now()
+        now = pytz.utc.localize(datetime.now())
         if now.year == ts.year:
             if now.month == ts.month:
                 if now.day == ts.day:
@@ -35,30 +36,18 @@ def register_jinja_filters(app):
             return ts.strftime('%d.%m %H:%M')
         return ts.strftime('%d.%m.%Y %H:%M')
 
+    @app.template_filter('nl2br')
+    def nl2br(t):
+        if isinstance(t, str):
+            t = str(Markup.escape(t))
+            t = t.strip().replace('\r', '').replace('\n', '<br>')
+        return Markup(t)
+
     @app.template_filter('money')
     def jinja_money(x):
         if x is None:
             return '0'
         return '{:,}'.format(round(x)).replace(',', ' ')
-
-    months = {
-        1: 'Январь',
-        2: 'Февраль',
-        3: 'Март',
-        4: 'Апрель',
-        5: 'Май',
-        6: 'Июнь',
-        7: 'Июль',
-        8: 'Август',
-        9: 'Сентябрь',
-        10: 'Октябрь',
-        11: 'Ноябрь',
-        12: 'Декабрь'
-    }
-
-    @app.template_filter('month')
-    def month(x):
-        return months[x]
 
     @app.template_filter('ellipsis')
     def ellipsis(x, length):
