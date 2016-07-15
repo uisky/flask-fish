@@ -1,0 +1,42 @@
+{% raw %}{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="b-page__content thirteen wide column">
+    <div class="b-page__pure">
+
+        {% include "flashes.html" %}
+
+        <div class="b-page__title">
+            <h1>Регистрация</h1>
+        </div>
+
+        <div class="b-form ui form b-form--wide">
+            <form method="post" class="b-form__validate">
+                {{ form.csrf_token }}
+                <div class="b-form__section field">
+                    <label>E-mail:</label>
+                    {{ form.email(class='form-control', type='email', autofocus=True, required=True) }}
+                </div>
+                <div class="b-form__section field">
+                    <label>Ваше имя:</label>
+                    {{ form.name(class='form-control', required=True) }}
+                </div>
+                <div class="b-form__section field">
+                    <label>Пароль:</label>
+                    {{ form.password(class='form-control', required=True) }}
+                </div>
+                <div class="b-form__section field">
+                    <label>И ещё раз:</label>
+                    {{ form.password2(class='form-control', required=True) }}
+                </div>
+                <div class="b-form__section field">
+                    <button type="submit" class="ui large green button">Зарегистрироваться</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% endraw %}

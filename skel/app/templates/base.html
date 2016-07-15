@@ -37,6 +37,27 @@
             {% endfor %}
         </ul>
         {% endblock %}
+
+        {% endraw %}{% if 'FLASK_LOGIN' in core %}{% raw %}
+        <div class="navbar-text pull-right">
+            {% if current_user.is_authenticated %}
+                Привет, {{ user.name }}!
+                <a href="{{ url_for('users.logout') }}">Выйти</a>
+            {% else %}
+            <form method="post" action="{{ url_for('users.login') }}" class="form-inline">
+                <div class="form-group">
+                    <input type="text" name="email" class="form-control" placeholder="e-mail">
+                    <input type="password" name="password" class="form-control" placeholder="Пароль">
+                    <button type="submit" class="btn btn-primary">Ok</button>
+                </div>
+                <div class="form-group">
+                    <a href="{{ url_for('users.register') }}">Регистрация</a> |
+                    <a href="{{ url_for('users.remind') }}">Я забыл пароль</a>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+        {% endraw %}{% endif %}{% raw %}
     </div>
 </nav>
 

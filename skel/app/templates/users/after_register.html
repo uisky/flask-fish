@@ -1,0 +1,21 @@
+{% raw %}{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="b-page__content thirteen wide column">
+    <div class="b-page__pure">
+
+        {% include "flashes.html" %}
+
+        <div class="b-page__title">
+            <h1>Регистрация</h1>
+        </div>
+
+        <h2>Добро пожаловать!</h2>
+        <p>Письмо для подтверждения регистрации отправлено на адрес {{ email }}.</p>
+        <p>Для подтверждения регистрации пройдите по ссылке, указанной в этом письме.</p>
+
+    </div>
+</div>
+{% endblock %}
+{% endraw %}

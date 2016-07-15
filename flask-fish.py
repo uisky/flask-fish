@@ -78,7 +78,15 @@ class ConfigForm(npyscreen.ActionForm):
 def copy_file(src, dst=None, **kwargs):
     if dst is None:
         dst = os.path.join(options['dst_dir'], src)
+
     print('%s -> %s' % (src, dst))
+
+    abssrc = os.path.join(skel_dir, src)
+    if os.path.isdir(abssrc):
+        for entry in os.listdir(abssrc):
+            copy_file(os.path.join(src, entry), os.path.join(dst, entry), **kwargs)
+        return
+
     template = jenv.get_template(src)
 
     o = options.copy()
@@ -90,10 +98,12 @@ def copy_file(src, dst=None, **kwargs):
 
 def create_project():
     print('Creating project %s in dir %s' % (options['name'], options['dst_dir']))
-    from pprint import pprint
 
     if os.path.exists(options['dst_dir']):
         print('WARNING: Directory exists')
+
+    if 'FLASK_LOGIN' in options['core'] and 'users' not in options['blueprints']:
+        options['blueprints'].append('users')
 
     # Ядро
     app_dir = os.path.join(options['dst_dir'], options['name'])
@@ -106,7 +116,7 @@ def create_project():
     for file in ('.gitignore', 'uwsgi.py', 'requirements.txt'):
         copy_file(file)
 
-    for file in ('config.py', 'config.local.py', '__init__.py', 'app.py', 'core.py', 'jinja.py', 'util.py',
+    for file in ('config.py', 'config.local.py', '__init__.py', 'app.py', 'core.py', 'jinja.py', 'util.py', 'mail.py',
                  'templates/base.html', 'static/common.js', 'static/common.css'):
         copy_file(os.path.join('app', file), os.path.join(app_dir, file))
 
@@ -141,7 +151,9 @@ def create_project():
         copy_file('entry.py')
 
     if 'FLASK_LOGIN' in options['core']:
-        pass
+        os.makedirs(os.path.join(app_dir, 'templates', 'users', 'email'), exist_ok=True)
+        for file in ('models/users.py', 'models/__init__.py', 'users/', 'templates/users/'):
+            copy_file(os.path.join('app', file), os.path.join(app_dir, file))
 
     if 'SQLALCHEMY_LOGGING' in options['core']:
         copy_file(os.path.join('app', 'log.py'), os.path.join(app_dir, 'log.py'))
