@@ -1,5 +1,5 @@
 flask
-{% if 2 in core -%}
+{% if 'FLASK_SCRIPT' in core -%}
 flask-script
 {% endif %}
 
@@ -8,19 +8,19 @@ flask-wtf
 pytz
 
 psycopg2
-{% if 1 in core -%}
+{% if 'SQLALCHEMY' in core -%}
 sqlalchemy
-{% endif -%}
-{% if 0 in core -%}
+{%- endif %}
+{% if 'ALEMBIC' in core -%}
 alembic
 flask-sqlalchemy
-{% endif -%}
+{%- endif %}
 
-{% if 3 in core -%}
+{% if 'FLASK_LOGIN' in core -%}
 flask-login
-{% endif -%}
+{%- endif %}
 
-{% if 4 in core -%}
+{% if 'SQLALCHEMY_LOGGING' in core -%}
 ansicolors
 sqlparse
-{% endif -%}
+{%- endif %}

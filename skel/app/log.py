@@ -5,21 +5,20 @@ import re
 import ast
 import datetime
 from functools import partial
-
-import ansicolors
+import colors
 
 
 class FlaskFormatter(logging.Formatter):
-    format_string = ('%(levelname)s ' + ansicolors.black('%(asctime)s %(pathname)s:%(lineno)d\n') +
+    format_string = ('%(levelname)s ' + colors.black('%(asctime)s %(pathname)s:%(lineno)d\n') +
                      '%(message)s\n')
 
     def format(self, record):
         level_color = {
-            'DEBUG': partial(ansicolors.cyan, style='bold'),
-            'INFO': partial(ansicolors.white, style='bold+faint'),
-            'WARNING': partial(ansicolors.yellow, style='bold'),
-            'ERROR': partial(ansicolors.red, style='bold'),
-            'CRITICAL': partial(ansicolors.yellow, bg='red', style='bold')
+            'DEBUG': partial(colors.cyan, style='bold'),
+            'INFO': partial(colors.white, style='bold+faint'),
+            'WARNING': partial(colors.yellow, style='bold'),
+            'ERROR': partial(colors.red, style='bold'),
+            'CRITICAL': partial(colors.yellow, bg='red', style='bold')
         }
         record.levelname = level_color[record.levelname](record.levelname)
         record.message = record.getMessage()
@@ -64,7 +63,7 @@ def init_logging(app):
     app.logger.propagate = False
     app.logger.addHandler(console_handler)
 
-    db_logger_level = logging.INFO if app.config['SQLALCHEMY_TRUE_ECHO'] else logging.WARNING
+    db_logger_level = logging.INFO if app.config.get('SQLALCHEMY_TRUE_ECHO', False) else logging.WARNING
 
     db_formatter = AlchemyFormatter()
 

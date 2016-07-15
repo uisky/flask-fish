@@ -4,8 +4,7 @@ from flask import Flask
 
 from {{ name }}.jinja import register_jinja_filters
 from {{ name }}.core import db, csrf
-
-{% if 4 in core -%}
+{% if 'SQLALCHEMY_LOGGING' in core -%}
 from .log import init_logging
 {%- endif %}
 
@@ -16,7 +15,7 @@ def create_app(cfg=None, purpose=None):
     app.purpose = purpose
     load_config(app, cfg)
 
-    {% if 4 in core -%}
+    {% if 'SQLALCHEMY_LOGGING' in core -%}
     init_logging(app)
     {%- endif %}
 
@@ -28,6 +27,10 @@ def create_app(cfg=None, purpose=None):
         import {{ name }}.models
 
     csrf.init_app(app)
+
+    {% if 'FLASK_LOGIN' in core -%}
+    init_login(app)
+    {%- endif %}
 
     register_blueprints(app)
 
@@ -61,3 +64,14 @@ def load_config(app, cfg=None):
 
     if cfg is not None:
         app.config.from_pyfile(cfg)
+
+{% if 'FLASK_LOGIN' in core -%}
+def init_login(app):
+    from .core import login_manager
+    from {{ name }}.models import User
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(user_id)
+{%- endif %}

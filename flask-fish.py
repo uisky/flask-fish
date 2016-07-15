@@ -4,13 +4,15 @@ import random
 import string
 import os
 import jinja2
+from collections import OrderedDict
 
-
-CORE_ALEMBIC = 0
-CORE_SQLALCHEMY = 1
-CORE_FLASK_SCRIPT = 2
-CORE_FLASK_LOGIN = 3
-CORE_SQLALCHEMY_LOGGING = 4
+CORE_MODULES = OrderedDict([
+    ('ALEMBIC', 'alembic'),
+    ('SQLALCHEMY', 'sqlalchemy'),
+    ('FLASK_SCRIPT', 'flask-script'),
+    ('FLASK_LOGIN', 'flask-login (implies users blueprint)'),
+    ('SQLALCHEMY_LOGGING', 'sqlalchemy logging'),
+])
 
 TEMPLATE_BOOTSTRAP3 = 0
 TEMPLATE_YANDEX_MAPS = 1
@@ -36,7 +38,7 @@ class ConfigForm(npyscreen.ActionForm):
         )
         self.wg['serverport'] = self.add(npyscreen.TitleText, name="Server port:", value=options['serverport'])
 
-        core_modules = ['alembic', 'sqlalchemy', 'flask-script', 'flask-login', 'sqlalchemy logging']
+        core_modules = list(CORE_MODULES.values())
         self.wg['core'] = self.add(
             npyscreen.TitleMultiSelect, max_height=len(core_modules) + 1, value=options['core'], name="Core:",
             values=core_modules, scroll_exit=True
@@ -44,10 +46,10 @@ class ConfigForm(npyscreen.ActionForm):
 
         self.wg['blueprints'] = self.add(npyscreen.TitleText, name='Blueprints', value='front, admin')
 
-        self.wg['template'] = self.add(
-            npyscreen.TitleMultiSelect, max_height=4, value=options['template'], name="Template:",
-            values=['bootstrap 3.0', 'Яндекс.Карты', 'Google Maps'], scroll_exit=True
-        )
+        # self.wg['template'] = self.add(
+        #     npyscreen.TitleMultiSelect, max_height=4, value=options['template'], name="Template:",
+        #     values=['bootstrap 3.0', 'Яндекс.Карты', 'Google Maps'], scroll_exit=True
+        # )
 
         self.wg['dbname'] = self.add(npyscreen.TitleText, name="DB name:", value=options['dbname'])
         self.wg['dbuser'] = self.add(npyscreen.TitleText, name="DB user:", value=options['dbuser'])
@@ -60,6 +62,14 @@ class ConfigForm(npyscreen.ActionForm):
     def on_ok(self):
         for k, wg in self.wg.items():
             options[k] = wg.value
+
+        options['dst_dir'] = os.path.abspath(options['dst_dir'])
+        options['blueprints'] = [x.strip() for x in options['blueprints'].split(',') if x.strip() != '']
+
+        core = []
+        for i in options['core']:
+            core.append(list(CORE_MODULES.items())[i][0])
+        options['core'] = core
 
     def on_cancel(self):
         exit()
@@ -79,10 +89,9 @@ def copy_file(src, dst=None, **kwargs):
 
 
 def create_project():
-    options['dst_dir'] = os.path.abspath(options['dst_dir'])
-    options['blueprints'] = [x.strip() for x in options['blueprints'].split(',') if x.strip() != '']
-
     print('Creating project %s in dir %s' % (options['name'], options['dst_dir']))
+    from pprint import pprint
+
     if os.path.exists(options['dst_dir']):
         print('WARNING: Directory exists')
 
@@ -117,13 +126,13 @@ def create_project():
         )
 
     # alembic
-    if CORE_ALEMBIC in options['core']:
+    if 'ALEMBIC' in options['core']:
         os.makedirs(os.path.join(options['dst_dir'], 'alembic', 'versions'), exist_ok=True)
         for file in ('alembic.ini', 'alembic/env.py', 'alembic/script.py.mako'):
             copy_file(file)
 
     # flask_script
-    if CORE_FLASK_SCRIPT in options['core']:
+    if 'FLASK_SCRIPT' in options['core']:
         os.makedirs(os.path.join(options['dst_dir'], 'manage'), exist_ok=True)
         copy_file('py.py')
         copy_file('manage/__init__.py')
@@ -131,7 +140,10 @@ def create_project():
     else:
         copy_file('entry.py')
 
-    if CORE_SQLALCHEMY_LOGGING in options['core']:
+    if 'FLASK_LOGIN' in options['core']:
+        pass
+
+    if 'SQLALCHEMY_LOGGING' in options['core']:
         copy_file(os.path.join('app', 'log.py'), os.path.join(app_dir, 'log.py'))
 
     if options['dbcreate']:
