@@ -1,42 +1,40 @@
-{% raw %}{% extends 'base.html' %}
-
+{% raw -%}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="b-page__content thirteen wide column">
-    <div class="b-page__pure">
+<h1>Регистрация</h1>
 
-        {% include "flashes.html" %}
-
-        <div class="b-page__title">
-            <h1>Регистрация</h1>
+<form method="post" class="form-horizontal">
+    {{ form.csrf_token }}
+    <div class="form-group">
+        <label class="control-label col-sm-2">E-mail:</label>
+        <div class="col-sm-10">
+            {{ form.email(class='form-control', type='email', autofocus=True, required=True) }}
         </div>
-
-        <div class="b-form ui form b-form--wide">
-            <form method="post" class="b-form__validate">
-                {{ form.csrf_token }}
-                <div class="b-form__section field">
-                    <label>E-mail:</label>
-                    {{ form.email(class='form-control', type='email', autofocus=True, required=True) }}
-                </div>
-                <div class="b-form__section field">
-                    <label>Ваше имя:</label>
-                    {{ form.name(class='form-control', required=True) }}
-                </div>
-                <div class="b-form__section field">
-                    <label>Пароль:</label>
-                    {{ form.password(class='form-control', required=True) }}
-                </div>
-                <div class="b-form__section field">
-                    <label>И ещё раз:</label>
-                    {{ form.password2(class='form-control', required=True) }}
-                </div>
-                <div class="b-form__section field">
-                    <button type="submit" class="ui large green button">Зарегистрироваться</button>
-                </div>
-            </form>
-        </div>
-
     </div>
-</div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Ваше имя:</label>
+        <div class="col-sm-10">
+            {{ form.name(class='form-control', required=True) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Пароль:</label>
+        <div class="col-sm-10">
+            {{ form.password(class='form-control', required=True) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">И ещё раз:</label>
+        <div class="col-sm-10">
+            {{ form.password2(class='form-control', required=True) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <button type="submit" class="btn btn-success">Зарегистрироваться</button>
+        </div>
+    </div>
+</form>
 {% endblock %}
 {% endraw %}
