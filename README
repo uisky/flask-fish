@@ -1,3 +1,4 @@
-- create blueprints
-- create templates
-- flask-login
++ create blueprints
++ create templates
++ flask-login
+- config.py -> SECRET_KEY
