@@ -104,6 +104,8 @@ def create_project():
         options['blueprints'].append('users')
 
     # Ядро
+    options['secret_key'] = random_string(60)
+
     app_dir = os.path.join(options['dst_dir'], options['name'])
     os.makedirs(options['dst_dir'], exist_ok=True)
     os.makedirs(app_dir, exist_ok=True)

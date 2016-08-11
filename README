@@ -1,8 +1,4 @@
-- SECRET_KEY
-- def bulk_send_email(subject, recipients, sender='info@landlord.ru'
-- README
-- Egg
-+ create blueprints
-+ create templates
-+ flask-login
-- config.py -> SECRET_KEY
+Flask-Fish
+==========
+
+Недописанная генерилка болванок Flask-проектов. Работает хуёво.

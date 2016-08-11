@@ -8,7 +8,7 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://{{ dbuser }}:{{ dbpass }}@localhost:5432
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-SECRET_KEY = 'override-this!'
+SECRET_KEY = '{{ secret_key }}'
 
 # WTF_CSRF_CHECK_DEFAULT = False
 # WTF_CSRF_ENABLED = False
