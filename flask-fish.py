@@ -79,8 +79,6 @@ def copy_file(src, dst=None, **kwargs):
     if dst is None:
         dst = os.path.join(options['dst_dir'], src)
 
-    print('%s -> %s' % (src, dst))
-
     abssrc = os.path.join(skel_dir, src)
     if os.path.isdir(abssrc):
         for entry in os.listdir(abssrc):
@@ -161,6 +159,10 @@ def create_project():
     if options['dbcreate']:
         os.system(""" sudo -u postgres psql -c "CREATE USER {dbuser} ENCRYPTED PASSWORD '{dbpass}'" """.format(**options))
         os.system(""" sudo -u postgres psql -c "CREATE DATABASE {dbname} OWNER {dbuser}" """.format(**options))
+
+    for blueprint in options['blueprints']:
+        print('Project available at http://localhost:{}/{}'.format(options['serverport'], blueprint))
+
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser('flask-fish', add_help=True)

@@ -1,3 +1,4 @@
-- create blueprints
-- create templates
-- flask-login
+- SECRET_KEY
+- def bulk_send_email(subject, recipients, sender='info@landlord.ru'
+- README
+- Egg

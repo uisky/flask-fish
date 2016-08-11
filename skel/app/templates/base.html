@@ -41,7 +41,7 @@
         {% endraw %}{% if 'FLASK_LOGIN' in core %}{% raw %}
         {% if current_user.is_authenticated %}
             <div class="navbar-text pull-right">
-                Привет, {{ user.name }}!
+                Привет, {{ current_user.name }}!
                 <a href="{{ url_for('users.logout') }}">Выйти</a>
             </div>
         {% else %}

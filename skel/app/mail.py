@@ -152,7 +152,7 @@ def send_email(subject, recipients, sender=None, attach=None,
                 print('smtplib.SMTPRecipientsRefused: %s' % repr(recipients))
 
 
-def bulk_send_email(subject, recipients, sender='info@landlord.ru', attach=None,
+def bulk_send_email(subject, recipients, sender=None, attach=None,
                     html_body=None, text_body=None, template=None, **kwargs):
     """
     Отправка письма нескольким адресатам. Каждый получит свой собственный экземпляр.
