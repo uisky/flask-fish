@@ -12,7 +12,7 @@ from . import mod, forms
 
 @mod.route('/')
 def index():
-    abort(503)
+    abort(501)
 
 
 @mod.route('/login/', methods=('POST',))
